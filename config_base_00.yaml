@@ -26,9 +26,9 @@ proxies:
 #############################################
 
 mixed-port: 7890
-ipv6: true
+ipv6: false
 allow-lan: true
-unified-delay: false
+unified-delay: true # 统一延迟
 tcp-concurrent: true
 bind-address: '*'
 mode: rule
@@ -53,30 +53,22 @@ tproxy-port: 7892
 
 # 硬件与控制选项 (保持原版配置)
 interface-name: eth0
-disable-keep-alive: true
+disable-keep-alive: false
 keep-alive-idle: 600
 keep-alive-interval: 30
 
-# 其他
+# GeoIP 数据库 (用于 GeoIP 规则) qWen 提供的
 hosts:
   localhost.localhost: 127.0.0.1
 geodata-mode: false
 geodata-loader: standard
-geo-auto-update: true
-geo-update-interval: 48
-
-# GeoIP 数据库 (用于 GeoIP 规则) qWen 提供的
-geodata-mode: true
 geox-url:
-  geoip: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat"
-  geosite: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
-  mmdb: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb"
-# Nikki 中提供的代理
-# https://gh-proxy.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat #全球数据库
-# https://gh-proxy.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat #仅包含中国
-# https://gh-proxy.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb
-# https://gh-proxy.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat
-# https://gh-proxy.com/https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb
+  geoip: "https://gh-proxy.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat"
+  geosite: "https://gh-proxy.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
+  mmdb: "https://gh-proxy.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb"
+  asn: "https://gh-proxy.com/https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb"
+geo-auto-update: true
+geo-update-interval: 72
 
 #############################################
 # 嗅探 *重点关注*
@@ -102,9 +94,9 @@ sniffer:
         - "443"
         - "8443"
       override-destination: true
-    # 强制解析域名 # Gemini加的，我没看懂
-    force-domain: 
-      - "+.google.com"
+  # # 强制解析域名 # Gemini加的，我没看懂
+  # force-domain: 
+  #   - "+.google.com"
   # skip-domain: # 跳过域名
   #   - "Mijia Cloud"
   #   - "+.push.apple.com"
@@ -136,26 +128,26 @@ tun:
 
 dns:
   enable: true
-  ipv6: true # false
+  ipv6: false
   listen: '[::]:1053'
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   use-hosts: true # 查询 hosts
   cache-algorithm: arc
   fake-ip-filter:
-    - +.lan
-    - +.local
-    - geosite:cn
-    # - "+.market.xiaomi.com" # qWen 提供的
-    # - "+.push.apple.com"
-    # - "*.lan" # 感觉没必要，好像是示范
-    # - "*.localdomain"
-    # - "*.example"
-    # - "*.invalid"
-    # - "*.localhost"
-    # - "*.test"
-    # - "*.home.arpa"
-
+    - "*"
+    - "+.lan"
+    - "+.local"
+    - "geosite:cn"
+    - "+.msftconnecttest.com"
+    - "+.push.apple.com"
+    - "+.msftconnecttest.com"
+    - "+.msftncsi.com"
+    # - "google.com"        # 某些谷歌服务需要真实 IP
+    # - "+.stun.*.*"        # STUN 服务
+    # 七尺宇的fake-ip-filter，需要配合自建的规则
+    - "rule-set:fakeipfilter_domain"
+    
   fake-ip-filter-mode: blacklist
   respect-rules: true
   prefer-h3: false
@@ -175,9 +167,7 @@ dns:
   fallback:
     - https://8.8.8.8/dns-query
     - https://1.1.1.1/dns-query
-  # 七尺宇的fake-ip-filter，需要配合自建的规则
-  fake-ip-filter:
-    - "rule-set:fakeipfilter_domain"
+
 
 #############################################
 # 策略组 *无须关注*

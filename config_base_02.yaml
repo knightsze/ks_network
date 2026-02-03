@@ -53,7 +53,7 @@ profile:
 external-controller: '[::]:9090'
 external-ui: ui
 external-ui-name: Zashboard
-external-ui-url: https://github.com/Zephyruso/zashboard/releases/latest/download/dist-cdn-fonts.zip
+external-ui-url: https://gh-proxy.com/https://github.com/Zephyruso/zashboard/releases/latest/download/dist-cdn-fonts.zip
 secret: "181818"
 
 # 硬件与控制选项 (保持原版配置)
@@ -200,20 +200,12 @@ default: &default
 
 proxy-groups:
 # 业务分流组
-  - {name: AI, <<: *default}
-  - {name: Stream Media, <<: *default}
-  - {name: GitHub, <<: *default}
-  - {name: Reddit, <<: *default}  
-  - {name: Nvidia, <<: *default}
-  - {name: Apple, <<: *default}
-  - {name: Microsoft, <<: *default}
-  - {name: Games, <<: *default}
-  - {name: Crypto, <<: *default}
-  - {name: Test, <<: *default}
-  - {name: Block, <<: *default}
-  - {name: 国外, <<: *default}
-  - {name: 国内, <<: *default}
-  - {name: 其他, <<: *default}  
+  - {name: 🤖 人工智能, <<: *default}
+  - {name: 📱 通讯/社交, <<: *default}
+  - {name: 🏢 办公/厂商, <<: *default}
+  - {name: 🎬 视频媒体, <<: *default}  
+  - {name: 💻 开发/基础, <<: *default}
+
 
 # 选择节点
   - name: 所有-手动
@@ -394,16 +386,46 @@ proxy-groups:
 # 规则匹配 *重点关注*
 #############################################
 rules:
-  - RULE-SET,TEST / Domain,Test
-  - RULE-SET,Block / Domain,Block  
-  - RULE-SET,GitHub / Domain,GitHub    
-  - RULE-SET,ChatGPT / Domain,AI
-  - RULE-SET,Claude / Domain,AI
-  - RULE-SET,Copilot / Domain,AI
-  - RULE-SET,Gemini / Domain,AI
-  - RULE-SET,Telegram / Domain,Telegram
-  - RULE-SET,Telegram / IP,Telegram
-  - MATCH,其他
+  # - RULE-SET,TEST / Domain,Test
+  # - RULE-SET,Block / Domain,Block
+  # --- 01 🤖 人工智能 ---
+  - RULE-SET,ai-openai,🤖 人工智能
+  - RULE-SET,ai-anthropic,🤖 人工智能
+  - RULE-SET,ai-gemini,🤖 人工智能
+  - RULE-SET,ai-others,🤖 人工智能
+  # --- 02 📱 通讯/社交 ---
+  - RULE-SET,social-telegram,📱 通讯/社交
+  - RULE-SET,social-telegram-ip,📱 通讯/社交,no-resolve # 关键：防止 Telegram 语音/长连接断流
+  - RULE-SET,social-twitter,📱 通讯/社交
+  - RULE-SET,social-facebook,📱 通讯/社交
+  - RULE-SET,social-instagram,📱 通讯/社交
+  - RULE-SET,social-discord,📱 通讯/社交
+  - RULE-SET,social-whatsapp,📱 通讯/社交
+  - RULE-SET,social-signal,📱 通讯/社交
+  # --- 03 🏢 办公/厂商 ---
+  - RULE-SET,office-google,🏢 办公/厂商
+  - RULE-SET,office-microsoft,🏢 办公/厂商
+  - RULE-SET,office-outlook,🏢 办公/厂商  # 紧跟在 microsoft 之后，确保覆盖
+  - RULE-SET,office-apple,🏢 办公/厂商
+  # - RULE-SET,office-adobe,🏢 办公/厂商  # 这个要 Block
+  - RULE-SET,office-notion,🏢 办公/厂商
+  # --- 04 🎬 视频媒体 ---
+  - RULE-SET,media-youtube,🎬 视频媒体
+  - RULE-SET,media-netflix,🎬 视频媒体
+  - RULE-SET,media-disney,🎬 视频媒体
+  - RULE-SET,media-tiktok,🎬 视频媒体
+  - RULE-SET,media-twitch,🎬 视频媒体
+  - RULE-SET,media-spotify,🎬 视频媒体
+  # --- 05 💻 开发/基础 ---
+  - RULE-SET,dev-github,💻 开发/基础
+  - RULE-SET,dev-docker,💻 开发/基础
+  - RULE-SET,dev-python,💻 开发/基础
+  - RULE-SET,dev-stackoverflow,💻 开发/基础
+  - RULE-SET,dev-reddit,💻 开发/基础
+  - RULE-SET,dev-developer,💻 开发/基础
+
+
+
 
 #############################################
 # 规则集 *重点关注*
@@ -416,12 +438,48 @@ rule-anchor:
 rule-providers:
   # 七尺宇配合fake-ip-filter自建的规则
   fakeipfilter_domain: {<<: *domain, url: "https://raw.githubusercontent.com/wwqgtxx/clash-rules/release/fakeip-filter.mrs"}
-  TEST / Domain: {<<: *class, url: "https://gh-proxy.com/raw.githubusercontent.com/liandu2024/clash/refs/heads/main/list/Check.list"}
-  Block / Domain: {<<: *class, url: "https://gh-proxy.com/raw.githubusercontent.com/liandu2024/clash/refs/heads/main/list/Block.list"}  
-  GitHub / Domain: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/github.mrs"}
-  ChatGPT / Domain: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/openai.mrs"}
-  Claude / Domain: {<<: *class, url: "https://gh-proxy.com/raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Claude/Claude.list"}
-  Copilot / Domain: {<<: *class, url: "https://gh-proxy.com/raw.githubusercontent.com/liandu2024/clash/refs/heads/main/list/Copilot.list"}
-  Gemini / Domain: {<<: *class, url: "https://gh-proxy.com/raw.githubusercontent.com/liandu2024/clash/refs/heads/main/list/Gemini.list"}
-  Telegram / Domain: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/telegram.mrs"}  
-  Telegram / IP: {<<: *ip, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geoip/telegram.mrs"}
+  # TEST / Domain: {<<: *class, url: "https://gh-proxy.com/raw.githubusercontent.com/liandu2024/clash/refs/heads/main/list/Check.list"}
+  # Block / Domain: {<<: *class, url: "https://gh-proxy.com/raw.githubusercontent.com/liandu2024/clash/refs/heads/main/list/Block.list"}  
+
+  # --- 01 🤖 人工智能 ---
+  ai-openai: {<<: *domain, url: "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/openai.mrs"}
+  ai-anthropic: {<<: *domain, url: "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/anthropic.mrs"}
+  ai-gemini: {<<: *domain, url: "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google-gemini.mrs"}
+  ai-others: {<<: *domain, url: "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ai.mrs"}
+  # --- 02 📱 通讯/社交 ---
+  social-telegram: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/telegram.mrs"}
+  social-telegram-ip: {<<: *ip, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geoip/telegram.mrs"}
+  social-twitter: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/twitter.mrs"}
+  social-facebook: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/facebook.mrs"}
+  social-instagram: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/instagram.mrs"}
+  social-discord: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/discord.mrs"}
+  social-whatsapp: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/whatsapp.mrs"}
+  social-signal: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/signal.mrs"}
+  # --- 03 🏢 办公/厂商 ---
+  office-google: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/google.mrs"}
+  office-microsoft: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/microsoft.mrs"}
+  office-outlook: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/outlook.mrs"}
+  office-apple: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/apple.mrs"}
+  # office-adobe: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/adobe.mrs"}    # 这个要 Block
+  office-notion: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/notion.mrs"}
+  # --- 04 🎬 视频媒体 ---
+  media-youtube: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/youtube.mrs"}
+  media-netflix: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/netflix.mrs"}
+  media-disney: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/disney.mrs"}
+  media-tiktok: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tiktok.mrs"}
+  media-twitch: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/twitch.mrs"}
+  media-spotify: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/spotify.mrs"}
+# --- 05 💻 开发/基础 ---
+  dev-github: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/github.mrs"}
+  dev-docker: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/docker.mrs"}
+  dev-python: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/python.mrs"}
+  dev-stackoverflow: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/stackoverflow.mrs"}
+  dev-reddit: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/reddit.mrs"}
+  dev-developer: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/developer.mrs"}
+
+
+
+
+
+
+

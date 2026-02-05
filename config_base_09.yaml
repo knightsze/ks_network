@@ -7,7 +7,7 @@
 
 proxy-providers:
   SSRDOG:
-    url: "https://83c3d83ea347878b7d2c20008d870bfd.beijing-aliyuncs.sbs/s?t=83c3d83ea347878b7d2c20008d870bfd.jpg" # <--- 请在此填入机场A的订阅链接
+    url: "https://83c30bfd.jpg" # <--- 请在此填入机场A的订阅链接
     type: http
     interval: 86400
     health-check: {enable: true, url: "https://cp.cloudflare.com/generate_204", interval: 300, timeout: 4000}
@@ -15,7 +15,7 @@ proxy-providers:
       additional-prefix: "[SSRDOG]"
 
   CroLAX:
-    url: "https://2000w.xyz/c/pyupr6wbs9ge9bs4" # <--- 请在此填入机场B的订阅链接
+    url: "https://2s4" # <--- 请在此填入机场B的订阅链接
     type: http
     interval: 86400
     health-check: {enable: true, url: "https://cp.cloudflare.com/generate_204", interval: 300, timeout: 4000}
@@ -496,4 +496,5 @@ rules:
   - GEOIP,CN,07_🚀-国内直连,no-resolve
 
   # [08 终点] 全球兜底
+
   - MATCH,08_🌍-全球最速
